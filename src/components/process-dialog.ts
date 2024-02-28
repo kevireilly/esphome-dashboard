@@ -7,6 +7,7 @@ import { fireEvent } from "../util/fire-event";
 import { esphomeDialogStyles } from "../styles";
 import { textDownload } from "../util/file-download";
 import { basename } from "../util/basename";
+import {openCleanDialog} from '../clean';
 
 @customElement("esphome-process-dialog")
 export class ESPHomeProcessDialog extends LitElement {
@@ -37,6 +38,12 @@ export class ESPHomeProcessDialog extends LitElement {
           slot="secondaryAction"
           label="Download Logs"
           @click=${this._downloadLogs}
+        ></mwc-button>
+
+        <mwc-button
+            slot="secondaryAction"
+            label="Clean build files"
+            @click=${this._cleanBuildFiles}
         ></mwc-button>
 
         <slot name="secondaryAction" slot="secondaryAction"></slot>
@@ -72,6 +79,14 @@ export class ESPHomeProcessDialog extends LitElement {
       this.shadowRoot!.querySelector("esphome-remote-process")!.logs(),
       filename,
     );
+  }
+
+  private _cleanBuildFiles() {
+    if (this.spawnParams?.configuration) {
+      openCleanDialog(this.spawnParams.configuration);
+    } else {
+      alert('Unable to locate device config');
+    }
   }
 
   static styles = [
